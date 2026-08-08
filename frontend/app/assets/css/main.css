@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: 'Public Sans', sans-serif;
+
+  /* Accent scale used only in dark mode (see overrides below) */
+  --color-accent-50: #FFF4ED;
+  --color-accent-100: #FFE6D5;
+  --color-accent-200: #FFC9A8;
+  --color-accent-300: #FFA170;
+  --color-accent-400: #FF7A3D;
+  --color-accent-500: #F97316;
+  --color-accent-600: #E2600C;
+  --color-accent-700: #BB490B;
+  --color-accent-800: #953A11;
+  --color-accent-900: #793111;
+  --color-accent-950: #411606;
+}
+
+/*
+ * Theme system
+ * Light mode: white surfaces, near-black primary actions, professional & minimal.
+ * Dark mode: near-black surfaces, orange primary actions/accents.
+ * Both share the same component structure -- only these tokens change.
+ */
+:root {
+  --ui-primary: var(--color-neutral-900);
+  --ui-radius: 0.625rem;
+}
+
+.dark {
+  --ui-primary: var(--color-accent-500);
+  --ui-radius: 0.625rem;
+}
+
+body {
+  @apply antialiased;
+}
+
+/* Restore pointer cursor on interactive elements (Tailwind v4 preflight resets this) */
+button:not(:disabled),
+[role='button']:not(:disabled) {
+  cursor: pointer;
+}

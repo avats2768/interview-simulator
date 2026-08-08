@@ -1,4 +1,13 @@
 package com.simulator.backend.auth.dto;
 
-public class ResendVerificationRequest {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record ResendVerificationRequest(
+
+        @NotBlank
+        @Email
+        String email
+
+) {
 }
