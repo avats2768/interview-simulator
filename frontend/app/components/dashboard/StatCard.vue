@@ -1,25 +1,52 @@
 <script setup>
-import PageHeader from '~/components/common/PageHeader.vue';
-
-definePageMeta({ title: 'Dashboard' })
+defineProps({
+  label: {
+    type: String,
+    required: true
+  },
+  value: {
+    type: String,
+    required: true
+  },
+  icon: {
+    type: String,
+    required: true
+  },
+  trend: {
+    type: Object,
+    default: null
+    // shape: { value: '+3', positive: true }
+  }
+})
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
-    <PageHeader
-      title="Dashboard"
-      description="Welcome back, Ethan. Here's an overview of your interview prep."
-    />
+  <UCard>
+    <div class="flex items-center justify-between">
+      <div class="flex flex-col gap-1">
+        <span class="text-sm text-dimmed">{{ label }}</span>
+        <span class="text-2xl font-semibold text-highlighted">{{ value }}</span>
+      </div>
 
-    <UCard :ui="{ body: 'flex flex-col items-center justify-center gap-3 py-16 text-center' }">
+      <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <UIcon
+          :name="icon"
+          class="size-5"
+        />
+      </div>
+    </div>
+
+    <div
+      v-if="trend"
+      class="mt-3 flex items-center gap-1 text-xs"
+    >
       <UIcon
-        name="i-lucide-layout-dashboard"
-        class="size-8 text-dimmed"
+        :name="trend.positive ? 'i-lucide-trending-up' : 'i-lucide-trending-down'"
+        class="size-3.5"
+        :class="trend.positive ? 'text-success' : 'text-error'"
       />
-      <p class="text-sm text-dimmed max-w-sm">
-        The application layout is ready. Dashboard widgets (fulfillment charts, stats, recent
-        sessions) will be built here in the next phase.
-      </p>
-    </UCard>
-  </div>
+      <span :class="trend.positive ? 'text-success' : 'text-error'">{{ trend.value }}</span>
+      <span class="text-dimmed">vs last week</span>
+    </div>
+  </UCard>
 </template>

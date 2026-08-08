@@ -1,21 +1,25 @@
 <script setup>
-// Placeholder session info for the layout phase.
-const user = {
-  name: 'Ethan Miller',
-  role: 'Candidate',
-  avatar: undefined
-}
+import { useAuthStore } from '~/stores/authStore'
 
+const authStore = useAuthStore()
 const toast = useToast()
 
+const user = computed(() => ({
+  name: authStore.user?.username || authStore.user?.email || 'Account',
+  role: authStore.user?.role || 'Candidate',
+  avatar: undefined
+}))
+
 async function logout() {
-  // Placeholder for the layout phase -- clear real session/auth state here once wired up.
+  authStore.logout()
+
   toast.add({
     title: 'Signed out',
     description: 'You have been logged out.',
     color: 'neutral',
     icon: 'i-lucide-log-out'
   })
+
   await navigateTo('/auth/login')
 }
 

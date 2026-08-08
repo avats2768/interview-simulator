@@ -5,10 +5,10 @@ import com.simulator.backend.user.dto.ProfileResponse;
 import com.simulator.backend.user.dto.UpdateProfileRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/candidate/profile")
@@ -41,7 +41,7 @@ public class ProfileController {
     }
 
     /**
-     * Create / update logged-in candidate profile.
+     * Update logged-in candidate profile.
      *
      * PUT /candidate/profile/me
      */
@@ -62,6 +62,61 @@ public class ProfileController {
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "Profile updated successfully.",
+                        profile
+                )
+        );
+    }
+
+    /**
+     * Upload or replace profile image.
+     *
+     * POST /candidate/profile/me/image
+     */
+    @PostMapping(
+            value = "/me/image",
+            consumes = "multipart/form-data"
+    )
+    public ResponseEntity<ApiResponse<ProfileResponse>> uploadProfileImage(
+            Authentication authentication,
+            @RequestParam("image") MultipartFile image
+    ) {
+
+        String userUuid = authentication.getName();
+
+        ProfileResponse profile =
+                profileService.uploadProfileImage(
+                        userUuid,
+                        image
+                );
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Profile image uploaded successfully.",
+                        profile
+                )
+        );
+    }
+
+    /**
+     * Delete profile image.
+     *
+     * DELETE /candidate/profile/me/image
+     */
+    @DeleteMapping("/me/image")
+    public ResponseEntity<ApiResponse<ProfileResponse>> deleteProfileImage(
+            Authentication authentication
+    ) {
+
+        String userUuid = authentication.getName();
+
+        ProfileResponse profile =
+                profileService.deleteProfileImage(
+                        userUuid
+                );
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Profile image deleted successfully.",
                         profile
                 )
         );

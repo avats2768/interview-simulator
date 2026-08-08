@@ -1,6 +1,6 @@
 <script setup>
-import AppSidebar from '~/components/common/AppSidebar.vue';
-import AppTopbar from '~/components/common/AppTopbar.vue';
+import AppSidebar from '~/components/common/AppSidebar.vue'
+import AppTopbar from '~/components/common/AppTopbar.vue'
 
 const sidebar = useSidebarStore()
 </script>

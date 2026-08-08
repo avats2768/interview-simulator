@@ -1,7 +1,7 @@
 <script setup>
-import PageHeader from '~/components/common/PageHeader.vue';
+import PageHeader from '~/components/common/PageHeader.vue'
 
-definePageMeta({ title: 'Coding Round' })
+definePageMeta({ title: 'Coding Round', middleware: 'auth' })
 </script>
 
 <template>

@@ -1,97 +1,168 @@
 <script setup>
+import { ref, computed } from 'vue'
 import { useProfileStore } from '~/stores/profileStore'
-import { getInitials } from '~/utils/string'
-
-defineProps({
-  src: {
-    type: String,
-    default: null
-  },
-  name: {
-    type: String,
-    default: ''
-  }
-})
 
 const profileStore = useProfileStore()
-const toast = useToast()
 
 const fileInput = ref(null)
-const previewUrl = ref(null)
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const imagePreview = ref(null)
 
+/**
+ * Current image shown by the component.
+ */
+const src = computed(() => {
+
+  if (imagePreview.value) {
+    return imagePreview.value
+  }
+
+  return profileStore.profile?.profileImage || null
+})
+
+/**
+ * Open hidden file input.
+ */
 function openFilePicker() {
+
+  if (profileStore.uploading) {
+    return
+  }
+
   fileInput.value?.click()
 }
 
+/**
+ * Handle selected image.
+ */
 async function onFileChange(event) {
-  const file = event.target.files?.[0]
-  event.target.value = ''
 
-  if (!file) return
+  const file =
+    event.target.files?.[0]
 
-  if (!ALLOWED_TYPES.includes(file.type)) {
-    toast.add({
-      title: 'Unsupported file type',
-      description: 'Please choose a JPG, PNG or WEBP image.',
-      color: 'error'
-    })
+  if (!file) {
     return
   }
 
-  if (file.size > MAX_FILE_SIZE) {
-    toast.add({
-      title: 'File too large',
-      description: 'Please choose an image under 5MB.',
-      color: 'error'
-    })
+  /*
+   * Validate file type on frontend.
+   *
+   * Backend also validates it.
+   */
+  const allowedTypes = [
+    'image/jpeg',
+    'image/png',
+    'image/webp'
+  ]
+
+  if (!allowedTypes.includes(file.type)) {
+
+    profileStore.error =
+      'Only JPG, PNG, and WebP images are allowed.'
+
+    event.target.value = ''
+
     return
   }
 
-  previewUrl.value = URL.createObjectURL(file)
+  /*
+   * Validate maximum size.
+   */
+  const maxSize =
+    5 * 1024 * 1024
+
+  if (file.size > maxSize) {
+
+    profileStore.error =
+      'Profile image must not exceed 5 MB.'
+
+    event.target.value = ''
+
+    return
+  }
+
+  /*
+   * Create local preview.
+   */
+  imagePreview.value =
+    URL.createObjectURL(file)
 
   try {
-    await profileStore.uploadProfileImage(file)
 
-    toast.add({
-      title: 'Profile image updated successfully.',
-      color: 'success'
-    })
+    await profileStore.uploadProfileImage(
+      file
+    )
+
+    /*
+     * Backend response now contains the
+     * permanent Cloudinary URL.
+     */
+    imagePreview.value = null
+
   } catch (error) {
-    toast.add({
-      title: 'Upload failed',
-      description: error.response?.data?.message || 'Something went wrong while uploading your photo.',
-      color: 'error'
-    })
+
+    /*
+     * Upload failed.
+     *
+     * Remove temporary preview.
+     */
+    imagePreview.value = null
+
   } finally {
-    if (previewUrl.value) {
-      URL.revokeObjectURL(previewUrl.value)
-      previewUrl.value = null
-    }
+
+    /*
+     * Allow selecting the same file again.
+     */
+    event.target.value = ''
   }
 }
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-3">
-    <div class="relative">
-      <UAvatar
-        :src="previewUrl || src"
-        :alt="name || 'Profile photo'"
-        :text="getInitials(name || '')"
-        size="3xl"
+
+  <div class="relative">
+
+    <!-- Profile image -->
+    <div
+      class="relative h-24 w-24 overflow-hidden rounded-full"
+    >
+
+      <img
+        v-if="src"
+        :src="src"
+        alt="Profile photo"
+        class="h-full w-full object-cover"
       />
 
+      <div
+        v-else
+        class="flex h-full w-full items-center justify-center bg-neutral-800 text-2xl font-semibold"
+      >
+        {{
+          profileStore.fullName
+            ?.split(' ')
+            .map(name => name.charAt(0))
+            .join('')
+            .slice(0, 2)
+            .toUpperCase()
+        }}
+      </div>
+
+      <!-- Upload progress -->
       <div
         v-if="profileStore.uploading"
         class="absolute inset-0 flex items-center justify-center rounded-full bg-black/50"
       >
-        <span class="text-xs font-semibold text-white">{{ profileStore.uploadProgress }}%</span>
+        <span
+          class="text-xs font-semibold text-white"
+        >
+          {{ profileStore.uploadProgress }}%
+        </span>
       </div>
+
     </div>
 
+    <!-- Hidden input -->
     <input
       ref="fileInput"
       type="file"
@@ -99,10 +170,15 @@ async function onFileChange(event) {
       class="hidden"
       aria-label="Upload profile photo"
       @change="onFileChange"
-    >
+    />
 
+    <!-- Upload button -->
     <UButton
-      :label="src ? 'Change Photo' : 'Upload Photo'"
+      :label="
+        src
+          ? 'Change Photo'
+          : 'Upload Photo'
+      "
       icon="i-lucide-camera"
       color="neutral"
       variant="outline"
@@ -111,5 +187,7 @@ async function onFileChange(event) {
       :disabled="profileStore.uploading"
       @click="openFilePicker"
     />
+
   </div>
+
 </template>

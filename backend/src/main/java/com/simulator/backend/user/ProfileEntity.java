@@ -44,6 +44,9 @@ public class ProfileEntity {
     @Column(columnDefinition = "TEXT")
     private String profileImage;
 
+    @Column(length = 500)
+    private String profileImagePublicId;
+
     @Column(length = 150)
     private String headline;
 

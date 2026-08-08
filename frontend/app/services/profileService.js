@@ -1,30 +1,76 @@
 import api from '~/services/axios'
 
-// Kept in one place so the upload endpoint can be swapped/updated later
-// without touching the store or components.
-const PROFILE_IMAGE_ENDPOINT = '/candidate/profile/image'
+const PROFILE_ENDPOINT = '/candidate/profile'
+const PROFILE_IMAGE_ENDPOINT = '/candidate/profile/me/image'
 
 export default {
+
+  /**
+   * Get logged-in candidate profile.
+   */
   async getMyProfile() {
-    const response = await api.get('/candidate/profile/me')
+    const response = await api.get(
+      `${PROFILE_ENDPOINT}/me`
+    )
+
     return response.data
   },
 
+  /**
+   * Update logged-in candidate profile.
+   */
   async updateProfile(payload) {
-    const response = await api.put('/candidate/profile/me', payload)
+    const response = await api.put(
+      `${PROFILE_ENDPOINT}/me`,
+      payload
+    )
+
     return response.data
   },
 
-  async uploadProfileImage(file, onUploadProgress) {
-    const formData = new FormData()
-    formData.append('file', file)
+  /**
+   * Upload / replace profile image.
+   *
+   * Backend expects:
+   * multipart field name = image
+   */
+  async uploadProfileImage(
+    file,
+    onUploadProgress
+  ) {
 
-    const response = await api.post(PROFILE_IMAGE_ENDPOINT, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      onUploadProgress
-    })
+    if (!file) {
+      throw new Error(
+        'Please select an image.'
+      )
+    }
+
+    const formData = new FormData()
+
+    formData.append(
+      'image',
+      file
+    )
+
+    const response = await api.post(
+      PROFILE_IMAGE_ENDPOINT,
+      formData,
+      {
+        onUploadProgress
+      }
+    )
+
+    return response.data
+  },
+
+  /**
+   * Delete profile image.
+   */
+  async deleteProfileImage() {
+
+    const response = await api.delete(
+      PROFILE_IMAGE_ENDPOINT
+    )
 
     return response.data
   }

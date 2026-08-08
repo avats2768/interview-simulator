@@ -1,7 +1,6 @@
 <script setup>
-import AppLogo from '~/components/common/AppLogo.vue';
-import ThemeToggle from '~/components/common/ThemeToggle.vue';
-
+import AppLogo from '~/components/common/AppLogo.vue'
+import ThemeToggle from '~/components/common/ThemeToggle.vue'
 </script>
 
 <template>

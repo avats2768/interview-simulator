@@ -1,8 +1,8 @@
 <script setup>
-import AppBreadcrumb from './AppBreadcrumb.vue';
-import NotificationButton from './NotificationButton.vue';
-import ThemeToggle from './ThemeToggle.vue';
-import UserDropdown from './UserDropdown.vue';
+import AppBreadcrumb from './AppBreadcrumb.vue'
+import NotificationButton from './NotificationButton.vue'
+import ThemeToggle from './ThemeToggle.vue'
+import UserDropdown from './UserDropdown.vue'
 
 const sidebar = useSidebarStore()
 const { pageTitle } = useNavigation()

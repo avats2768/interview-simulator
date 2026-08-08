@@ -1,6 +1,6 @@
 <script setup>
-import AppLogo from './AppLogo.vue';
-import SidebarItem from './SidebarItem.vue';
+import AppLogo from './AppLogo.vue'
+import SidebarItem from './SidebarItem.vue'
 
 const sidebar = useSidebarStore()
 const { primaryItems, footerItems } = useNavigation()
@@ -28,7 +28,10 @@ const { primaryItems, footerItems } = useNavigation()
       />
     </div>
 
-    <div v-if="sidebar.collapsed" class="flex justify-center border-b border-default py-2">
+    <div
+      v-if="sidebar.collapsed"
+      class="flex justify-center border-b border-default py-2"
+    >
       <UButton
         icon="i-lucide-panel-left-open"
         color="neutral"

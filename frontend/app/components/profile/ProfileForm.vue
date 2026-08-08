@@ -99,32 +99,78 @@ function onSubmit(event) {
 </script>
 
 <template>
-  <UForm :state="state" :validate="validate" class="flex flex-col gap-6" @submit="onSubmit">
+  <UForm
+    :state="state"
+    :validate="validate"
+    class="flex flex-col gap-6"
+    @submit="onSubmit"
+  >
     <!-- Personal Information -->
     <UCard>
       <template #header>
-        <h3 class="text-sm font-semibold text-highlighted">Personal Information</h3>
+        <h3 class="text-sm font-semibold text-highlighted">
+          Personal Information
+        </h3>
       </template>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UFormField label="First Name" name="firstName" required>
-          <UInput v-model="state.firstName" placeholder="Ethan" class="w-full" />
+        <UFormField
+          label="First Name"
+          name="firstName"
+          required
+        >
+          <UInput
+            v-model="state.firstName"
+            placeholder="Ethan"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Last Name" name="lastName" required>
-          <UInput v-model="state.lastName" placeholder="Miller" class="w-full" />
+        <UFormField
+          label="Last Name"
+          name="lastName"
+          required
+        >
+          <UInput
+            v-model="state.lastName"
+            placeholder="Miller"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Phone" name="phone">
-          <UInput v-model="state.phone" type="tel" placeholder="+1 555 123 4567" icon="i-lucide-phone" class="w-full" />
+        <UFormField
+          label="Phone"
+          name="phone"
+        >
+          <UInput
+            v-model="state.phone"
+            type="tel"
+            placeholder="+1 555 123 4567"
+            icon="i-lucide-phone"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="City" name="city">
-          <UInput v-model="state.city" placeholder="Hisar" class="w-full" />
+        <UFormField
+          label="City"
+          name="city"
+        >
+          <UInput
+            v-model="state.city"
+            placeholder="Hisar"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Country" name="country">
-          <UInput v-model="state.country" placeholder="India" class="w-full" />
+        <UFormField
+          label="Country"
+          name="country"
+        >
+          <UInput
+            v-model="state.country"
+            placeholder="India"
+            class="w-full"
+          />
         </UFormField>
       </div>
     </UCard>
@@ -132,32 +178,80 @@ function onSubmit(event) {
     <!-- Professional Information -->
     <UCard>
       <template #header>
-        <h3 class="text-sm font-semibold text-highlighted">Professional Information</h3>
+        <h3 class="text-sm font-semibold text-highlighted">
+          Professional Information
+        </h3>
       </template>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UFormField label="Headline" name="headline" class="sm:col-span-2">
-          <UInput v-model="state.headline" placeholder="Full Stack Developer" class="w-full" />
+        <UFormField
+          label="Headline"
+          name="headline"
+          class="sm:col-span-2"
+        >
+          <UInput
+            v-model="state.headline"
+            placeholder="Full Stack Developer"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Years of Experience" name="yearsOfExperience">
-          <UInput v-model="state.yearsOfExperience" type="number" min="0" max="60" placeholder="3" class="w-full" />
+        <UFormField
+          label="Years of Experience"
+          name="yearsOfExperience"
+        >
+          <UInput
+            v-model="state.yearsOfExperience"
+            type="number"
+            min="0"
+            max="60"
+            placeholder="3"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Current Company" name="currentCompany">
-          <UInput v-model="state.currentCompany" placeholder="Acme Corp" class="w-full" />
+        <UFormField
+          label="Current Company"
+          name="currentCompany"
+        >
+          <UInput
+            v-model="state.currentCompany"
+            placeholder="Acme Corp"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Current Position" name="currentPosition">
-          <UInput v-model="state.currentPosition" placeholder="Frontend Engineer" class="w-full" />
+        <UFormField
+          label="Current Position"
+          name="currentPosition"
+        >
+          <UInput
+            v-model="state.currentPosition"
+            placeholder="Frontend Engineer"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Preferred Role" name="preferredRole">
-          <UInput v-model="state.preferredRole" placeholder="Full Stack Developer" class="w-full" />
+        <UFormField
+          label="Preferred Role"
+          name="preferredRole"
+        >
+          <UInput
+            v-model="state.preferredRole"
+            placeholder="Full Stack Developer"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Notice Period" name="noticePeriod">
-          <UInput v-model="state.noticePeriod" placeholder="30 Days" class="w-full" />
+        <UFormField
+          label="Notice Period"
+          name="noticePeriod"
+        >
+          <UInput
+            v-model="state.noticePeriod"
+            placeholder="30 Days"
+            class="w-full"
+          />
         </UFormField>
       </div>
     </UCard>
@@ -165,16 +259,38 @@ function onSubmit(event) {
     <!-- Compensation -->
     <UCard>
       <template #header>
-        <h3 class="text-sm font-semibold text-highlighted">Compensation</h3>
+        <h3 class="text-sm font-semibold text-highlighted">
+          Compensation
+        </h3>
       </template>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UFormField label="Current CTC (LPA)" name="currentCTC">
-          <UInput v-model="state.currentCTC" type="number" min="0" step="0.1" placeholder="3.5" class="w-full" />
+        <UFormField
+          label="Current CTC (LPA)"
+          name="currentCTC"
+        >
+          <UInput
+            v-model="state.currentCTC"
+            type="number"
+            min="0"
+            step="0.1"
+            placeholder="3.5"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Expected CTC (LPA)" name="expectedCTC">
-          <UInput v-model="state.expectedCTC" type="number" min="0" step="0.1" placeholder="6" class="w-full" />
+        <UFormField
+          label="Expected CTC (LPA)"
+          name="expectedCTC"
+        >
+          <UInput
+            v-model="state.expectedCTC"
+            type="number"
+            min="0"
+            step="0.1"
+            placeholder="6"
+            class="w-full"
+          />
         </UFormField>
       </div>
     </UCard>
@@ -182,20 +298,50 @@ function onSubmit(event) {
     <!-- Social Profiles -->
     <UCard>
       <template #header>
-        <h3 class="text-sm font-semibold text-highlighted">Social Profiles</h3>
+        <h3 class="text-sm font-semibold text-highlighted">
+          Social Profiles
+        </h3>
       </template>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UFormField label="LinkedIn" name="linkedinUrl" class="sm:col-span-2">
-          <UInput v-model="state.linkedinUrl" type="url" placeholder="https://linkedin.com/in/username" icon="i-lucide-linkedin" class="w-full" />
+        <UFormField
+          label="LinkedIn"
+          name="linkedinUrl"
+          class="sm:col-span-2"
+        >
+          <UInput
+            v-model="state.linkedinUrl"
+            type="url"
+            placeholder="https://linkedin.com/in/username"
+            icon="i-lucide-linkedin"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="GitHub" name="githubUrl">
-          <UInput v-model="state.githubUrl" type="url" placeholder="https://github.com/username" icon="i-lucide-github" class="w-full" />
+        <UFormField
+          label="GitHub"
+          name="githubUrl"
+        >
+          <UInput
+            v-model="state.githubUrl"
+            type="url"
+            placeholder="https://github.com/username"
+            icon="i-lucide-github"
+            class="w-full"
+          />
         </UFormField>
 
-        <UFormField label="Portfolio" name="portfolioUrl">
-          <UInput v-model="state.portfolioUrl" type="url" placeholder="https://yourdomain.com" icon="i-lucide-globe" class="w-full" />
+        <UFormField
+          label="Portfolio"
+          name="portfolioUrl"
+        >
+          <UInput
+            v-model="state.portfolioUrl"
+            type="url"
+            placeholder="https://yourdomain.com"
+            icon="i-lucide-globe"
+            class="w-full"
+          />
         </UFormField>
       </div>
     </UCard>
@@ -203,10 +349,16 @@ function onSubmit(event) {
     <!-- About -->
     <UCard>
       <template #header>
-        <h3 class="text-sm font-semibold text-highlighted">About</h3>
+        <h3 class="text-sm font-semibold text-highlighted">
+          About
+        </h3>
       </template>
 
-      <UFormField label="Bio" name="bio" :description="`Max ${BIO_MAX_LENGTH} characters`">
+      <UFormField
+        label="Bio"
+        name="bio"
+        :description="`Max ${BIO_MAX_LENGTH} characters`"
+      >
         <UTextarea
           v-model="state.bio"
           :maxlength="BIO_MAX_LENGTH"

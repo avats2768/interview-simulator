@@ -6,7 +6,7 @@ import SkillBreakdown from '~/components/dashboard/SkillBreakdown.vue'
 import UpcomingSession from '~/components/dashboard/UpcomingSession.vue'
 import RecentSessionsList from '~/components/dashboard/RecentSessionsList.vue'
 
-definePageMeta({ title: 'Dashboard' })
+definePageMeta({ title: 'Dashboard', middleware: 'auth' })
 
 // Static placeholder data for this phase -- will be replaced by real API/state.
 const stats = [
@@ -104,7 +104,11 @@ const recentSessions = [
       description="Welcome back, Ethan. Here's an overview of your interview prep."
     >
       <template #actions>
-        <UButton label="Start Mock Interview" icon="i-lucide-mic" to="/interview" />
+        <UButton
+          label="Start Mock Interview"
+          icon="i-lucide-mic"
+          to="/interview"
+        />
       </template>
     </PageHeader>
 
@@ -120,7 +124,10 @@ const recentSessions = [
     </div>
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <ScoreTrendChart :sessions="scoreTrend" class="lg:col-span-2" />
+      <ScoreTrendChart
+        :sessions="scoreTrend"
+        class="lg:col-span-2"
+      />
       <UpcomingSession
         role="Frontend Engineer"
         date="Aug 8, 2026"
@@ -130,7 +137,10 @@ const recentSessions = [
     </div>
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <RecentSessionsList :sessions="recentSessions" class="lg:col-span-2" />
+      <RecentSessionsList
+        :sessions="recentSessions"
+        class="lg:col-span-2"
+      />
       <SkillBreakdown :skills="skills" />
     </div>
   </div>

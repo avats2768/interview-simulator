@@ -17,10 +17,19 @@ const average = Math.round(
     <template #header>
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="text-sm font-semibold text-highlighted">Score Trend</h3>
-          <p class="text-xs text-dimmed mt-0.5">Last {{ sessions.length }} mock interviews</p>
+          <h3 class="text-sm font-semibold text-highlighted">
+            Score Trend
+          </h3>
+          <p class="text-xs text-dimmed mt-0.5">
+            Last {{ sessions.length }} mock interviews
+          </p>
         </div>
-        <UBadge color="primary" variant="subtle">Avg {{ average }}%</UBadge>
+        <UBadge
+          color="primary"
+          variant="subtle"
+        >
+          Avg {{ average }}%
+        </UBadge>
       </div>
     </template>
 
