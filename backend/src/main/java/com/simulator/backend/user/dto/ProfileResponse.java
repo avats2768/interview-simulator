@@ -22,6 +22,8 @@ public class ProfileResponse {
 
     private String profileImage;
 
+    private String profileImagePublicId;
+
     private String headline;
 
     private Integer yearsOfExperience;
@@ -50,10 +52,19 @@ public class ProfileResponse {
 
     private String bio;
 
+    /**
+     * Selected skill IDs.
+     *
+     * Example:
+     * [1, 2, 5, 8]
+     */
+    private Long[] skillIds;
+
     private Boolean profileCompleted;
 
     /**
      * Calculated field.
+     *
      * Not stored in database.
      */
     private Integer completionPercentage;
@@ -61,5 +72,4 @@ public class ProfileResponse {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
 }

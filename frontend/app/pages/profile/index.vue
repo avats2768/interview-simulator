@@ -3,58 +3,131 @@ import { useProfileStore } from '~/stores/profileStore'
 import ProfileCompletion from '~/components/profile/ProfileCompletion.vue'
 import ProfileOverview from '~/components/profile/ProfileOverview.vue'
 
-definePageMeta({ title: 'Profile', middleware: 'auth' })
+definePageMeta({
+  title: 'Profile',
+  middleware: 'auth'
+})
 
 const profileStore = useProfileStore()
 
+/*
+|--------------------------------------------------------------------------
+| Initial profile fetch
+|--------------------------------------------------------------------------
+*/
+
 if (!profileStore.profile) {
-  await profileStore.fetchProfile().catch(() => {})
+
+  await profileStore
+    .fetchProfile()
+    .catch(() => {})
 }
 
-function retry() {
-  profileStore.fetchProfile()
+/*
+|--------------------------------------------------------------------------
+| Retry
+|--------------------------------------------------------------------------
+*/
+
+async function retry() {
+
+  try {
+
+    await profileStore.fetchProfile()
+
+  } catch (error) {
+
+    // Error is already stored in profileStore.
+  }
 }
 </script>
 
 <template>
+
   <div class="flex flex-col gap-6">
+
+    <!-- ========================================================= -->
+    <!-- Page Header -->
+    <!-- ========================================================= -->
+
     <PageHeader
       title="Profile"
       description="Manage your personal information."
     />
 
-    <!-- Loading state -->
+
+    <!-- ========================================================= -->
+    <!-- Loading State -->
+    <!-- ========================================================= -->
+
     <div
-      v-if="profileStore.loading && !profileStore.profile"
+      v-if="
+        profileStore.loading
+        && !profileStore.profile
+      "
       class="flex flex-col gap-4"
     >
+
       <UCard
         v-for="n in 3"
         :key="n"
         :ui="{ body: 'py-8' }"
       >
-        <div class="flex items-center gap-4">
-          <div class="size-16 shrink-0 animate-pulse rounded-full bg-elevated" />
-          <div class="flex flex-1 flex-col gap-2">
-            <div class="h-4 w-1/3 animate-pulse rounded bg-elevated" />
-            <div class="h-3 w-1/4 animate-pulse rounded bg-elevated" />
+
+        <div
+          class="flex items-center gap-4"
+        >
+
+          <div
+            class="size-16 shrink-0 animate-pulse rounded-full bg-elevated"
+          />
+
+          <div
+            class="flex flex-1 flex-col gap-2"
+          >
+
+            <div
+              class="h-4 w-1/3 animate-pulse rounded bg-elevated"
+            />
+
+            <div
+              class="h-3 w-1/4 animate-pulse rounded bg-elevated"
+            />
+
           </div>
+
         </div>
+
       </UCard>
+
     </div>
 
-    <!-- Error state -->
+
+    <!-- ========================================================= -->
+    <!-- Error State -->
+    <!-- ========================================================= -->
+
     <UCard
-      v-else-if="profileStore.error && !profileStore.profile"
-      :ui="{ body: 'flex flex-col items-center justify-center gap-3 py-16 text-center' }"
+      v-else-if="
+        profileStore.error
+        && !profileStore.profile
+      "
+      :ui="{
+        body: 'flex flex-col items-center justify-center gap-3 py-16 text-center'
+      }"
     >
+
       <UIcon
         name="i-lucide-circle-x"
         class="size-8 text-error"
       />
-      <p class="text-sm text-dimmed max-w-sm">
+
+      <p
+        class="max-w-sm text-sm text-dimmed"
+      >
         {{ profileStore.error }}
       </p>
+
       <UButton
         label="Try Again"
         icon="i-lucide-refresh-cw"
@@ -62,31 +135,61 @@ function retry() {
         variant="outline"
         @click="retry"
       />
+
     </UCard>
 
-    <!-- Empty state -->
+
+    <!-- ========================================================= -->
+    <!-- Empty State -->
+    <!-- ========================================================= -->
+
     <UCard
       v-else-if="!profileStore.profile"
-      :ui="{ body: 'flex flex-col items-center justify-center gap-3 py-16 text-center' }"
+      :ui="{
+        body: 'flex flex-col items-center justify-center gap-3 py-16 text-center'
+      }"
     >
+
       <UIcon
         name="i-lucide-user-round"
         class="size-8 text-dimmed"
       />
-      <p class="text-sm text-dimmed max-w-sm">
-        You haven't set up your profile yet. Add your details to help recruiters and interviewers get to know you.
+
+      <p
+        class="max-w-sm text-sm text-dimmed"
+      >
+        You haven't set up your profile yet.
+        Add your details to help recruiters and
+        interviewers get to know you.
       </p>
+
       <UButton
         label="Set Up Profile"
         icon="i-lucide-pencil"
         to="/profile/edit"
       />
+
     </UCard>
 
-    <!-- Profile content -->
+
+    <!-- ========================================================= -->
+    <!-- Profile Content -->
+    <!-- ========================================================= -->
+
     <template v-else>
-      <ProfileCompletion :completion-percentage="profileStore.completionPercentage" />
-      <ProfileOverview :profile="profileStore.profile" />
+
+      <ProfileCompletion
+        :completion-percentage="
+          profileStore.completionPercentage
+        "
+      />
+
+      <ProfileOverview
+        :profile="profileStore.profile"
+      />
+
     </template>
+
   </div>
+
 </template>

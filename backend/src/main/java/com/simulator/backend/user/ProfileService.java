@@ -31,7 +31,9 @@ public class ProfileService {
      * is created for the user.
      */
     @Transactional
-    public ProfileResponse getMyProfile(String userUuid) {
+    public ProfileResponse getMyProfile(
+            String userUuid
+    ) {
 
         ProfileEntity profile =
                 profileRepository
@@ -42,11 +44,16 @@ public class ProfileService {
 
         updateCompletionStatus(profile);
 
-        return profileEntityMapper.toResponse(profile);
+        return profileEntityMapper.toResponse(
+                profile
+        );
     }
 
     /**
      * Update logged-in user's profile.
+     *
+     * This updates normal profile information
+     * and selected skill IDs.
      */
     @Transactional
     public ProfileResponse updateProfile(
@@ -66,6 +73,11 @@ public class ProfileService {
                 request
         );
 
+        updateSkillIds(
+                profile,
+                request
+        );
+
         updateCompletionStatus(profile);
 
         ProfileEntity savedProfile =
@@ -77,17 +89,12 @@ public class ProfileService {
     }
 
     /**
-     * Upload or replace the logged-in user's profile image.
+     * Upload or replace the logged-in user's
+     * profile image.
      *
-     * Flow:
-     *
-     * 1. Find user's profile.
-     * 2. Upload new image to Cloudinary.
-     * 3. Save new URL and public ID in database.
-     * 4. Delete old Cloudinary image.
-     *
-     * The old image is deleted only after the new image
-     * has successfully been uploaded and saved.
+     * New image is uploaded first.
+     * Database is updated second.
+     * Old image is deleted last.
      */
     @Transactional
     public ProfileResponse uploadProfileImage(
@@ -103,7 +110,7 @@ public class ProfileService {
                         );
 
         /*
-         * Store old public ID before replacing it.
+         * Keep old Cloudinary public ID.
          */
         String oldPublicId =
                 profile.getProfileImagePublicId();
@@ -118,7 +125,7 @@ public class ProfileService {
                 );
 
         /*
-         * Update database with new Cloudinary data.
+         * Update profile with new Cloudinary data.
          */
         profile.setProfileImage(
                 uploadResponse.getSecureUrl()
@@ -129,8 +136,7 @@ public class ProfileService {
         );
 
         /*
-         * Recalculate profile completion because
-         * profileImage is one of the completion fields.
+         * Recalculate completion.
          */
         updateCompletionStatus(profile);
 
@@ -144,10 +150,10 @@ public class ProfileService {
         } catch (RuntimeException exception) {
 
             /*
-             * Database update failed after Cloudinary upload.
+             * Database update failed.
              *
-             * Try to remove the newly uploaded image
-             * so that we don't leave an orphan asset.
+             * Remove newly uploaded Cloudinary asset
+             * to prevent an orphan file.
              */
             try {
 
@@ -158,7 +164,7 @@ public class ProfileService {
             } catch (RuntimeException cleanupException) {
 
                 /*
-                 * Do not hide the original database error.
+                 * Don't hide the original database exception.
                  */
             }
 
@@ -166,11 +172,8 @@ public class ProfileService {
         }
 
         /*
-         * Delete old image only after the new image
-         * has been successfully saved.
-         *
-         * If deletion fails, we don't fail the profile
-         * update because the new image is already valid.
+         * Delete old Cloudinary image only after
+         * the new image has been saved successfully.
          */
         if (
                 oldPublicId != null
@@ -189,11 +192,10 @@ public class ProfileService {
             } catch (RuntimeException exception) {
 
                 /*
-                 * New image is already successfully stored.
+                 * New image is already valid.
                  *
-                 * The old Cloudinary image can be cleaned up
-                 * later. Don't make the user's profile update
-                 * fail because of this cleanup operation.
+                 * Don't fail the profile update because
+                 * old-image cleanup failed.
                  */
             }
         }
@@ -205,13 +207,6 @@ public class ProfileService {
 
     /**
      * Delete the logged-in user's profile image.
-     *
-     * Flow:
-     *
-     * 1. Find profile.
-     * 2. Store Cloudinary public ID.
-     * 3. Remove image information from database.
-     * 4. Delete image from Cloudinary.
      */
     @Transactional
     public ProfileResponse deleteProfileImage(
@@ -225,6 +220,9 @@ public class ProfileService {
                                 () -> createEmptyProfile(userUuid)
                         );
 
+        /*
+         * Keep the old public ID before clearing it.
+         */
         String oldPublicId =
                 profile.getProfileImagePublicId();
 
@@ -244,8 +242,7 @@ public class ProfileService {
                 profileRepository.save(profile);
 
         /*
-         * Delete Cloudinary asset after the database
-         * has been successfully updated.
+         * Delete Cloudinary image.
          */
         if (
                 oldPublicId != null
@@ -263,8 +260,8 @@ public class ProfileService {
                 /*
                  * Database is already updated.
                  *
-                 * Don't restore the old URL because the
-                 * Cloudinary deletion can be retried later.
+                 * Don't restore the old image information.
+                 * Cloudinary cleanup can be retried later.
                  */
             }
         }
@@ -285,6 +282,7 @@ public class ProfileService {
                 ProfileEntity.builder()
                         .userUuid(userUuid)
                         .profileCompleted(false)
+                        .skillIds(new Long[0])
                         .build();
 
         return profileRepository.save(
@@ -293,9 +291,10 @@ public class ProfileService {
     }
 
     /**
-     * Copy allowed fields from request to entity.
+     * Update normal profile fields.
      *
-     * These fields are intentionally NOT updated:
+     * These fields are intentionally not accepted
+     * from the request:
      *
      * - id
      * - uuid
@@ -304,8 +303,6 @@ public class ProfileService {
      * - profileImagePublicId
      * - createdAt
      * - updatedAt
-     *
-     * Profile image is managed separately by Cloudinary.
      */
     private void updateProfileFields(
             ProfileEntity profile,
@@ -378,6 +375,36 @@ public class ProfileService {
 
         profile.setBio(
                 request.getBio()
+        );
+    }
+
+    /**
+     * Update selected skill IDs.
+     *
+     * Example:
+     *
+     * [1, 3, 5]
+     *
+     * is stored in PostgreSQL as:
+     *
+     * {1,3,5}
+     */
+    private void updateSkillIds(
+            ProfileEntity profile,
+            UpdateProfileRequest request
+    ) {
+
+        if (request.getSkillIds() == null) {
+
+            profile.setSkillIds(
+                    new Long[0]
+            );
+
+            return;
+        }
+
+        profile.setSkillIds(
+                request.getSkillIds()
         );
     }
 
